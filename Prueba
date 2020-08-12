@@ -1,0 +1,16 @@
+SELECT c.first_name, c.last_name ,sum(p.amount)as max_amount 
+FROM customer c 
+inner join payment p using (customer_id)
+WHERE max_amount BETWEEN 10 and 100
+
+SELECT c2.first_name,f.rating,
+	(SELECT COUNT(*) 
+	FROM rental r
+	where r.return_date is NULL AND 
+	r.customer_id = c2.customer_id ) as films
+FROM customer c2 
+inner join store s2 using (store_id)
+inner join inventory i using (store_id)
+inner join film f using (film_id)
+group by f.rating 
+
