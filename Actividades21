@@ -1,0 +1,167 @@
+||Write examples with string||
+127.0.0.1:6379> set mensaje redis
+OK
+127.0.0.1:6379> get mensaje 
+"redis"
+127.0.0.1:6379> getset mensaje "pruebas de strings"
+"redis"
+127.0.0.1:6379> get mensaje
+"pruebas de strings"
+127.0.0.1:6379> strlen mensaje
+(integer) 18
+
+||Write examples with hashe127.0.0.1:6379> hmset prueba name "prueba hash" 50 ranas 100 pantanos
+OK
+127.0.0.1:6379> hmget all prueba
+1) (nil)
+127.0.0.1:6379> hgetall prueba
+1) "name"
+2) "prueba hash"
+3) "50"
+4) "ranas"
+5) "100"
+6) "pantanos"
+127.0.0.1:6379> HINCRBY prueba 20 1
+(integer) 1
+127.0.0.1:6379> hgetall prueba
+1) "name"
+2) "prueba hash"
+3) "50"
+4) "ranas"
+5) "100"
+6) "pantanos"
+7) "20"
+8) "1"
+127.0.0.1:6379> hset prueba field 10
+(integer) 1
+127.0.0.1:6379> hgetall prueba
+ 1) "name"
+ 2) "prueba hash"
+ 3) "50"
+ 4) "ranas"
+ 5) "100"
+ 6) "pantanos"
+ 7) "20"
+ 8) "1"
+ 9) "field"
+10) "10"
+127.0.0.1:6379> HINCRBY prueba field -1
+(integer) 9
+127.0.0.1:6379> hgetall prueba
+ 1) "name"
+ 2) "prueba hash"
+ 3) "50"
+ 4) "ranas"
+ 5) "100"
+ 6) "pantanos"
+ 7) "20"
+ 8) "1"
+ 9) "field"
+10) "9"
+
+||Write examples with Lists||
+127.0.0.1:6379> lpush prueba1 list1
+(integer) 1
+127.0.0.1:6379> lpush prueba1 list2
+(integer) 2
+127.0.0.1:6379> lpush prueba1 list3
+(integer) 3
+127.0.0.1:6379> lrange prueba1 0 3
+1) "list3"
+2) "list2"
+3) "list1"
+127.0.0.1:6379> lrange prueba1 0 2
+1) "list3"
+2) "list2"
+3) "list1"
+127.0.0.1:6379> brpop prueba1
+(error) ERR wrong number of arguments for 'brpop' command
+127.0.0.1:6379> brpop prueba1 0
+1) "prueba1"
+2) "list1"
+127.0.0.1:6379> lrange prueba1 0 2
+1) "list3"
+2) "list2"
+127.0.0.1:6379> llen prueba1
+(integer) 2
+
+
+||Write examples with Sets||
+127.0.0.1:6379> SADD pruebas redis 
+(integer) 1
+127.0.0.1:6379> SADD pruebas mysql
+(integer) 1
+127.0.0.1:6379> SADD pruebas redis
+(integer) 0
+127.0.0.1:6379> smembers pruebas
+1) "mysql"
+2) "redis"
+127.0.0.1:6379> sinter pruebas pruebas3s
+1) "redis"
+
+||Write examples with Sorted Sets||
+127.0.0.1:6379> ZADD pruebas2 1 redis
+(integer) 1
+127.0.0.1:6379> ZADD pruebas2 1 mysql
+(integer) 1
+127.0.0.1:6379> ZADD pruebas2 1 ypf
+(integer) 1
+127.0.0.1:6379> ZADD pruebas2 1 ypf
+(integer) 0
+127.0.0.1:6379> Zrange pruebas2 0 4 withscores
+1) "mysql"
+2) "1"
+3) "redis"
+4) "1"
+5) "ypf"
+6) "1"
+127.0.0.1:6379> ZREMRANGEBYRANK pruebas2 0 1 
+(integer) 2
+127.0.0.1:6379> Zrange pruebas2 0 4 withscores
+1) "ypf"
+2) "1"
+
+||Write examples using Publish Subscribe||
+127.0.0.1:6379> SUBSCRIBE redisChat  
+	Reading messages... (press Ctrl-C to quit) 
+	1) "subscribe" 
+	2) "redisChat" 
+	3) (integer) 1 
+
+
+127.0.0.1:6379> PUBLISH redisChat "Prueba redis"  
+(integer) 1  
+127.0.0.1:6379> PUBLISH redisChat "Prueba 2 redis"  
+(integer) 1  
+ 
+	1) "message" 
+	2) "redisChat" 
+	3) "Prueba redis" 
+	1) "message" 
+	2) "redisChat" 
+	3) "Prueba 2 redis"
+
+||Write examples using Transactions||
+127.0.0.1:6379> MULTI 
+OK 
+127.0.0.1:6379> SET pruebas3 redis 
+QUEUED 
+127.0.0.1:6379> GET pruebas3 
+QUEUED 
+127.0.0.1:6379> INCR visitors 
+QUEUED 
+127.0.0.1:6379> EXEC  
+	1) OK 
+	2) "redis" 
+	3) (integer) 1 
+
+||Investigate backups||
+127.0.0.1:6379> SAVE  
+OK 
+127.0.0.1:6379> CONFIG get dir  
+1) "dir" 
+2) "/data"
+
+||Investigate Benchmarks - Run some||
+127.0.0.1:6379> redis-benchmark -n 100000  
+127.0.0.1:6379>redis-benchmark -p 3000
