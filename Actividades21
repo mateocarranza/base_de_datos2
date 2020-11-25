@@ -10,7 +10,8 @@ OK
 127.0.0.1:6379> strlen mensaje
 (integer) 18
 
-||Write examples with hashe127.0.0.1:6379> hmset prueba name "prueba hash" 50 ranas 100 pantanos
+||Write examples with hashe
+127.0.0.1:6379> hmset prueba name "prueba hash" 50 ranas 100 pantanos
 OK
 127.0.0.1:6379> hmget all prueba
 1) (nil)
